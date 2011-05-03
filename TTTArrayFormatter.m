@@ -96,10 +96,8 @@
         NSString *component = [[inputComponents objectAtIndex:idx] description];
         BOOL isFirstComponent = (idx == 0);
         BOOL isLastComponent = (idx == [inputComponents count] - 1);
-        if (self.delimiter && [inputComponents count] > 2) {
-            if (!isLastComponent || self.usesSerialDelimiter) {
-                component = [component stringByAppendingString:self.delimiter];
-            }
+        if (self.delimiter && [inputComponents count] > 2 && !(isLastComponent ^ self.usesSerialDelimiter)) {
+            component = [component stringByAppendingString:self.delimiter];
         }
         
         if (self.conjunction && self.arrayStyle != TTTArrayFormatterDataStyle && (isLastComponent && !isFirstComponent)) {
