@@ -44,9 +44,9 @@
     if (!self) {
         return nil;
     }
-
+    
     self.delimiter = NSLocalizedString(@", ", @"List delimiter");
-    self.conjunction = NSLocalizedString(@" and ", @"List conjunction");
+    self.conjunction = NSLocalizedString(@"and ", @"List conjunction");
     self.abbreviatedConjunction = NSLocalizedString(@" & ", nil);
     self.usesAbbreviatedConjunction = NO;
     self.usesSerialDelimiter = YES;
@@ -96,7 +96,7 @@
                 [mutableOutput appendString:self.delimiter];
             }
             
-            if (self.conjunction && self.arrayStyle != TTTArrayFormatterDataStyle && idx != [components count] - 1) {
+            if (self.conjunction && self.arrayStyle != TTTArrayFormatterDataStyle && idx == [components count] - 1) {
                 [mutableOutput appendString:self.conjunction];
             }
         }
