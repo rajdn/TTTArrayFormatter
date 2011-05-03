@@ -30,6 +30,7 @@ typedef enum {
 @interface TTTArrayFormatter : NSFormatter {
     TTTArrayFormatterStyle arrayStyle;
     NSString *delimiter;
+    NSString *separator;
     NSString *conjunction;
     NSString *abbreviatedConjunction;
     BOOL usesAbbreviatedConjunction;
@@ -45,6 +46,9 @@ typedef enum {
 
 - (NSString *)delimiter;
 - (void)setDelimiter:(NSString *)aDelimiter;
+
+- (NSString *)separator;
+- (void)setSeparator:(NSString *)aSeparator;
 
 - (NSString *)conjunction;
 - (void)setConjunction:(NSString *)aConjunction;

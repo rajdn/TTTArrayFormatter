@@ -25,6 +25,7 @@
 @interface TTTArrayFormatter ()
 @property (nonatomic, assign) TTTArrayFormatterStyle arrayStyle;
 @property (nonatomic, copy) NSString *delimiter;
+@property (nonatomic, copy) NSString *separator;
 @property (nonatomic, copy) NSString *conjunction;
 @property (nonatomic, copy) NSString *abbreviatedConjunction;
 @property (nonatomic, assign) BOOL usesAbbreviatedConjunction;
@@ -34,6 +35,7 @@
 @implementation TTTArrayFormatter
 @synthesize arrayStyle;
 @synthesize delimiter;
+@synthesize separator;
 @synthesize conjunction;
 @synthesize abbreviatedConjunction;
 @synthesize usesAbbreviatedConjunction;
@@ -45,8 +47,9 @@
         return nil;
     }
     
-    self.delimiter = NSLocalizedString(@", ", @"List delimiter");
-    self.conjunction = NSLocalizedString(@"and ", @"List conjunction");
+    self.delimiter = NSLocalizedString(@",", @"List delimiter");
+    self.separator = NSLocalizedString(@" ", @"List separator");
+    self.conjunction = NSLocalizedString(@"and", @"List conjunction");
     self.abbreviatedConjunction = NSLocalizedString(@" & ", nil);
     self.usesAbbreviatedConjunction = NO;
     self.usesSerialDelimiter = YES;
@@ -56,6 +59,7 @@
 
 - (void)dealloc {
     [delimiter release];
+    [separator release];
     [conjunction release];
     [abbreviatedConjunction release];
     [super dealloc];
@@ -86,27 +90,28 @@
         return nil;
     }
     
-    NSMutableString *mutableOutput = [NSMutableString stringWithString:@""];
-    NSArray *components = (NSArray *)anObject;
-    for (NSUInteger idx = 0; idx < [components count]; idx++) {
-        NSString *component = [[components objectAtIndex:idx] description];
-
-        if (idx != 0) {
-            if (self.conjunction && self.usesSerialDelimiter) {
-                [mutableOutput appendString:self.delimiter];
-            }
-            
-            if (self.conjunction && self.arrayStyle != TTTArrayFormatterDataStyle && idx == [components count] - 1) {
-                [mutableOutput appendString:self.conjunction];
+    NSMutableArray *outputComponents = [NSMutableArray array];
+    NSArray *inputComponents = (NSArray *)anObject;
+    for (NSUInteger idx = 0; idx < [inputComponents count]; idx++) {
+        NSString *component = [[inputComponents objectAtIndex:idx] description];
+        BOOL isFirstComponent = (idx == 0);
+        BOOL isLastComponent = (idx == [inputComponents count] - 1);
+        if (self.delimiter && [inputComponents count] > 2) {
+            if (!isLastComponent || self.usesSerialDelimiter) {
+                component = [component stringByAppendingString:self.delimiter];
             }
         }
         
+        if (self.conjunction && self.arrayStyle != TTTArrayFormatterDataStyle && (isLastComponent && !isFirstComponent)) {
+            [outputComponents addObject:self.conjunction];
+        }
+        
         if (component) {
-             [mutableOutput appendString:component];
+            [outputComponents addObject:component];
         }       
     }
     
-    return [NSString stringWithString:mutableOutput];
+    return [outputComponents componentsJoinedByString:self.separator];
 }
 
 - (BOOL)getObjectValue:(id *)obj forString:(NSString *)string errorDescription:(NSString **)error {
