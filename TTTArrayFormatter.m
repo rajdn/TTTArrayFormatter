@@ -96,7 +96,7 @@
         NSString *component = [[inputComponents objectAtIndex:idx] description];
         BOOL isFirstComponent = (idx == 0);
         BOOL isLastComponent = (idx == [inputComponents count] - 1);
-        if (self.delimiter && [inputComponents count] > 2 && !(isLastComponent ^ self.usesSerialDelimiter)) {
+        if (self.delimiter && [inputComponents count] > 2 && (!isLastComponent || (isLastComponent ^ self.usesSerialDelimiter))) {
             component = [component stringByAppendingString:self.delimiter];
         }
         
